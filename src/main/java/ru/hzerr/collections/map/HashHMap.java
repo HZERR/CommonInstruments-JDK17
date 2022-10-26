@@ -1,6 +1,6 @@
 package ru.hzerr.collections.map;
 
-import ru.hzerr.collections.HPair;
+import ru.hzerr.collections.pair.IUnmodifiablePair;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -138,16 +138,6 @@ public class HashHMap<K, V> extends HashMap<K, V> implements HMap<K, V> {
         return null;
     }
 
-    @SafeVarargs
-    public static <K, V> HashHMap<K, V> create(HPair<K, V>... pairs) {
-        HashHMap<K, V> instance = new HashHMap<>();
-        for (HPair<K, V> pair: pairs) {
-            instance.put(pair.getKey(), pair.getValue());
-        }
-
-        return instance;
-    }
-
     @Override
     public V putAndGet(K key, V value) {
         put(key, value);
@@ -158,5 +148,15 @@ public class HashHMap<K, V> extends HashMap<K, V> implements HMap<K, V> {
     public V putIfAbsentAndGet(K key, V value) {
         putIfAbsent(key, value);
         return value;
+    }
+
+    @SafeVarargs
+    public static <K, V> HashHMap<K, V> create(IUnmodifiablePair<K, V>... pairs) {
+        HashHMap<K, V> instance = new HashHMap<>();
+        for (IUnmodifiablePair<K, V> pair: pairs) {
+            instance.put(pair.key(), pair.value());
+        }
+
+        return instance;
     }
 }
