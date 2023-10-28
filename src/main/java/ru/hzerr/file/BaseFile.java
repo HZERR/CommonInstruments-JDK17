@@ -7,10 +7,7 @@ import ru.hzerr.file.exception.ValidationException;
 import ru.hzerr.file.exception.file.HFileRenameFailedException;
 import ru.hzerr.file.exception.file.HFileWriteException;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.URI;
 import java.nio.charset.Charset;
 import java.nio.file.CopyOption;
@@ -89,6 +86,12 @@ public abstract class BaseFile implements IFSObject {
     public abstract FileInputStream openInputStream() throws IOException;
     public abstract FileOutputStream openOutputStream() throws IOException;
     public abstract FileOutputStream openOutputStream(boolean append) throws IOException;
+    public abstract FileWriter openFileWriter() throws IOException;
+    public abstract FileWriter openFileWriter(boolean append) throws IOException;
+    public abstract FileWriter openFileWriter(Charset charset) throws IOException;
+    public abstract FileWriter openFileWriter(boolean append, Charset charset) throws IOException;
+    public abstract FileReader openFileReader() throws IOException;
+    public abstract FileReader openFileReader(Charset charset) throws IOException;
 
     // END METHODS
 

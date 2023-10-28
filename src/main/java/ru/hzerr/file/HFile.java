@@ -324,6 +324,60 @@ public class HFile extends BaseFile {
         return FileUtils.openOutputStream(file, append);
     }
 
+    @Override
+    public FileWriter openFileWriter() throws IOException {
+        checkExists(this);
+        if (!file.canWrite()) {
+            throw new HFileWriteException("File is not writable: '" + file + "'");
+        }
+
+        return new FileWriter(file);
+    }
+
+    @Override
+    public FileWriter openFileWriter(boolean append) throws IOException {
+        checkExists(this);
+        if (!file.canWrite()) {
+            throw new HFileWriteException("File is not writable: '" + file + "'");
+        }
+
+        return new FileWriter(file, append);
+    }
+
+    @Override
+    public FileWriter openFileWriter(Charset charset) throws IOException {
+        checkExists(this);
+        if (!file.canWrite()) {
+            throw new HFileWriteException("File is not writable: '" + file + "'");
+        }
+
+        return new FileWriter(file, charset);
+    }
+
+    @Override
+    public FileWriter openFileWriter(boolean append, Charset charset) throws IOException {
+        checkExists(this);
+        if (!file.canWrite()) {
+            throw new HFileWriteException("File is not writable: '" + file + "'");
+        }
+
+        return new FileWriter(file, charset, append);
+    }
+
+    @Override
+    public FileReader openFileReader() throws IOException {
+        checkExists(this);
+
+        return new FileReader(file);
+    }
+
+    @Override
+    public FileReader openFileReader(Charset charset) throws IOException {
+        checkExists(this);
+
+        return new FileReader(file, charset);
+    }
+
     public double sizeOf(SizeType type) {
         return sizeOfAsBigDecimal(type).doubleValue();
     }
