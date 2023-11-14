@@ -1,6 +1,7 @@
 # CommonInstruments-JDK17
 General Library for JDK 17
 
+[![](https://jitpack.io/v/HZERR/CommonInstruments-JDK17.svg)](https://jitpack.io/#HZERR/CommonInstruments-JDK17)
 [![](https://jitci.com/gh/HZERR/CommonInstruments-JDK17/svg)](https://jitci.com/gh/HZERR/CommonInstruments-JDK17)
 
 #
@@ -12,8 +13,8 @@ General Library for JDK 17
     </repositories>
     
     <dependency>
-        <groupId>com.github.HZERR</groupId>
-        <artifactId>CommonInstruments-JDK17</artifactId>
-        <version>babe9480</version>
-    </dependency>
+	    <groupId>com.github.HZERR</groupId>
+	    <artifactId>CommonInstruments-JDK17</artifactId>
+	    <version>1.2</version>
+	</dependency>
 
