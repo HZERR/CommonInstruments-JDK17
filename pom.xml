@@ -72,11 +72,7 @@
                 </configuration>
                 <executions>
                     <execution>
-                        <id>build-clean</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>single</goal>
-                        </goals>
+                        <id>clean-build-directory</id>
                     </execution>
                     <execution>
                         <id>make-assembly</id> <!-- this is used for inheritance merges -->
@@ -96,6 +92,11 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-clean-plugin</artifactId>
                 <version>3.2.0</version>
+                <executions>
+                    <execution>
+                        <id>clean-build-directory</id>
+                    </execution>
+                </executions>
                 <configuration>
                     <filesets>
                         <fileset>
@@ -106,15 +107,6 @@
                         </fileset>
                     </filesets>
                 </configuration>
-                <executions>
-                    <execution>
-                        <id>build-clean</id>
-                        <phase>initialize</phase>
-                        <goals>
-                            <goal>clean</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>
