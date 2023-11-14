@@ -41,8 +41,7 @@ public interface HList<E> extends List<E>,
      */
     E firstElement();
 
-    @Override
-    E[] toArray();
+    E[] toArray(Class<E> clazz);
 
     /**
      * Returns an array containing all of the elements in this collection,

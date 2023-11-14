@@ -5,6 +5,7 @@ import ru.hzerr.collections.functions.Functions;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.Serial;
+import java.lang.reflect.Array;
 import java.util.*;
 import java.util.function.*;
 import java.util.function.IntFunction;
@@ -530,7 +531,14 @@ public class SynchronizedHList<E> extends ArrayHList<E> {
     }
 
     @Override
-    public E[] toArray() {
+    public <T> T[] toArray(T[] a) {
+        synchronized (mutex) {
+            return super.toArray(a);
+        }
+    }
+
+    @Override
+    public Object[] toArray() {
         synchronized (mutex) {
             return super.toArray();
         }
@@ -539,6 +547,11 @@ public class SynchronizedHList<E> extends ArrayHList<E> {
     @Override
     public <T> T[] toArray(IntFunction<T[]> generator) {
         return toArray(generator.apply(0));
+    }
+
+    @Override
+    public E[] toArray(Class<E> clazz) {
+        return toArray((E[]) Array.newInstance(clazz, size()));
     }
 
     @Override

@@ -2,6 +2,7 @@ package ru.hzerr.collections.list;
 
 import ru.hzerr.collections.functions.Functions;
 
+import java.lang.reflect.Array;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.locks.ReentrantLock;
@@ -487,6 +488,11 @@ public class CopyOnWriteArrayHList<E> extends CopyOnWriteArrayList<E> implements
     @Override
     public <T> T[] toArray(IntFunction<T[]> generator) {
         return toArray(generator.apply(0));
+    }
+
+    @Override
+    public E[] toArray(Class<E> clazz) {
+        return toArray((E[]) Array.newInstance(clazz, size()));
     }
 
     @Override

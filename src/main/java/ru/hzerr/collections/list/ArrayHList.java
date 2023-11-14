@@ -2,6 +2,7 @@ package ru.hzerr.collections.list;
 
 import ru.hzerr.collections.functions.Functions;
 
+import java.lang.reflect.Array;
 import java.util.*;
 import java.util.function.*;
 import java.util.function.IntFunction;
@@ -408,13 +409,19 @@ public class ArrayHList<E> extends ArrayList<E> implements HList<E> {
 
     @Override
     @SuppressWarnings("unchecked")
-    public E[] toArray() {
-        return (E[]) super.toArray();
+    public Object[] toArray() {
+        return super.toArray();
     }
 
     @Override
     public <T> T[] toArray(IntFunction<T[]> generator) {
         return toArray(generator.apply(0));
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public E[] toArray(Class<E> clazz) {
+        return toArray((E[]) Array.newInstance(clazz, size()));
     }
 
     @Override
