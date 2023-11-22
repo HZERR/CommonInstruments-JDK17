@@ -3,7 +3,7 @@ package ru.hzerr.file;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import ru.hzerr.collections.list.ArrayHList;
+import ru.hzerr.collections.list.ExtendedList;
 import ru.hzerr.collections.list.HList;
 import ru.hzerr.file.exception.ParentNotFoundException;
 import ru.hzerr.file.exception.directory.NoSuchHDirectoryException;
@@ -199,7 +199,7 @@ public class HFile extends BaseFile {
     public HList<String> readLines(Charset charset) throws IOException {
         checkExists(this);
         try {
-            return new ArrayHList<>(FileUtils.readLines(file, charset));
+            return new ExtendedList<>(FileUtils.readLines(file, charset));
         } catch (IOException io) {
             throw new HFileReadException(io, "The reading of file " + this.getLocation() + " ended with an error");
         }

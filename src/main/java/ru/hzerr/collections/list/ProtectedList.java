@@ -1,6 +1,6 @@
 package ru.hzerr.collections.list;
 
-import ru.hzerr.collections.functions.Functions;
+import ru.hzerr.collections.functions.list.*;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -16,44 +16,44 @@ import java.util.stream.Stream;
  * @see Collections.SynchronizedList
  * @param <E> element type of collection
  */
-public class SynchronizedHList<E> extends ArrayHList<E> {
+public class ProtectedList<E> extends ExtendedList<E> {
 
     @Serial
     private static final long serialVersionUID = 1L;
 
     private final transient Object mutex;
 
-    public SynchronizedHList() {
+    public ProtectedList() {
         super();
         this.mutex = this;
     }
 
-    public SynchronizedHList(Object mutex) {
+    public ProtectedList(Object mutex) {
         super();
         this.mutex = mutex;
     }
 
-    public SynchronizedHList(int initialCapacity) {
+    public ProtectedList(int initialCapacity) {
         super(initialCapacity);
         this.mutex = this;
     }
 
-    public SynchronizedHList(int initialCapacity, Object mutex) {
+    public ProtectedList(int initialCapacity, Object mutex) {
         super(initialCapacity);
         this.mutex = mutex;
     }
 
-    public SynchronizedHList(Collection<? extends E> collection) {
+    public ProtectedList(Collection<? extends E> collection) {
         super(collection);
         this.mutex = this;
     }
 
-    public SynchronizedHList(Collection<? extends E> collection, Object mutex) {
+    public ProtectedList(Collection<? extends E> collection, Object mutex) {
         super(collection);
         this.mutex = mutex;
     }
 
-    private SynchronizedHList(SynchronizedHList<? extends E> list, int from, int to) {
+    private ProtectedList(ProtectedList<? extends E> list, int from, int to) {
         this.mutex = list.mutex;
         for (int i = from; i < to; i++) {
             add(list.get(i));
@@ -63,7 +63,7 @@ public class SynchronizedHList<E> extends ArrayHList<E> {
     @Override
     public <R> HList<R> map(Function<? super E, ? extends R> mapper) {
         synchronized (mutex) {
-            HList<R> list = new SynchronizedHList<>();
+            HList<R> list = new ProtectedList<>();
             for (E element : this) {
                 list.add(mapper.apply(element));
             }
@@ -73,9 +73,9 @@ public class SynchronizedHList<E> extends ArrayHList<E> {
     }
 
     @Override
-    public <R, TH extends Exception> HList<R> map(Functions.Func<? super E, ? extends R, TH> mapper, Class<TH> exception) throws TH {
+    public <R, TH extends Exception> HList<R> map(ProtectedFunction<? super E, ? extends R, TH> mapper, Class<TH> exception) throws TH {
         synchronized (mutex) {
-            HList<R> list = new SynchronizedHList<>();
+            HList<R> list = new ProtectedList<>();
             for (E element : this) {
                 list.add(mapper.apply(element));
             }
@@ -85,9 +85,9 @@ public class SynchronizedHList<E> extends ArrayHList<E> {
     }
 
     @Override
-    public <R, TH extends Exception, TH2 extends Exception> HList<R> map(Functions.BiFunc<? super E, ? extends R, TH, TH2> mapper, Class<TH> exception, Class<TH2> exception2) throws TH, TH2 {
+    public <R, TH extends Exception, TH2 extends Exception> HList<R> map(ProtectedBiFunction<? super E, ? extends R, TH, TH2> mapper, Class<TH> exception, Class<TH2> exception2) throws TH, TH2 {
         synchronized (mutex) {
-            HList<R> list = new SynchronizedHList<>();
+            HList<R> list = new ProtectedList<>();
             for (E element : this) {
                 list.add(mapper.apply(element));
             }
@@ -97,9 +97,9 @@ public class SynchronizedHList<E> extends ArrayHList<E> {
     }
 
     @Override
-    public <R, TH extends Exception, TH2 extends Exception, TH3 extends Exception> HList<R> map(Functions.ThFunc<? super E, ? extends R, TH, TH2, TH3> mapper, Class<TH> exception, Class<TH2> exception2, Class<TH3> exception3) throws TH, TH2, TH3 {
+    public <R, TH extends Exception, TH2 extends Exception, TH3 extends Exception> HList<R> map(ProtectedTHFunction<? super E, ? extends R, TH, TH2, TH3> mapper, Class<TH> exception, Class<TH2> exception2, Class<TH3> exception3) throws TH, TH2, TH3 {
         synchronized (mutex) {
-            HList<R> list = new SynchronizedHList<>();
+            HList<R> list = new ProtectedList<>();
             for (E element : this) {
                 list.add(mapper.apply(element));
             }
@@ -122,7 +122,7 @@ public class SynchronizedHList<E> extends ArrayHList<E> {
     }
 
     @Override
-    public <TH extends Exception> boolean allMatch(Functions.Predicate<? super E, TH> predicate, Class<TH> exception) throws TH {
+    public <TH extends Exception> boolean allMatch(ProtectedPredicate<? super E, TH> predicate, Class<TH> exception) throws TH {
         synchronized (mutex) {
             for (E element : this) {
                 if (!predicate.test(element)) {
@@ -135,7 +135,7 @@ public class SynchronizedHList<E> extends ArrayHList<E> {
     }
 
     @Override
-    public <TH extends Exception, TH2 extends Exception> boolean allMatch(Functions.BiPredicate<? super E, TH, TH2> predicate, Class<TH> exception, Class<TH2> exception2) throws TH, TH2 {
+    public <TH extends Exception, TH2 extends Exception> boolean allMatch(ProtectedBiPredicate<? super E, TH, TH2> predicate, Class<TH> exception, Class<TH2> exception2) throws TH, TH2 {
         synchronized (mutex) {
             for (E element : this) {
                 if (!predicate.test(element)) {
@@ -148,7 +148,7 @@ public class SynchronizedHList<E> extends ArrayHList<E> {
     }
 
     @Override
-    public <TH extends Exception, TH2 extends Exception, TH3 extends Exception> boolean allMatch(Functions.ThPredicate<? super E, TH, TH2, TH3> predicate, Class<TH> exception, Class<TH2> exception2, Class<TH3> exception3) throws TH, TH2, TH3 {
+    public <TH extends Exception, TH2 extends Exception, TH3 extends Exception> boolean allMatch(ProtectedTHPredicate<? super E, TH, TH2, TH3> predicate, Class<TH> exception, Class<TH2> exception2, Class<TH3> exception3) throws TH, TH2, TH3 {
         synchronized (mutex) {
             for (E element : this) {
                 if (!predicate.test(element)) {
@@ -174,7 +174,20 @@ public class SynchronizedHList<E> extends ArrayHList<E> {
     }
 
     @Override
-    public <TH extends Exception> boolean anyMatch(Functions.Predicate<? super E, TH> predicate, Class<TH> exception) throws TH {
+    public <TH extends Exception> boolean anyMatch(ProtectedPredicate<? super E, TH> protectedPredicate, Class<TH> exception) throws TH {
+        synchronized (mutex) {
+            for (E element : this) {
+                if (protectedPredicate.test(element)) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+    }
+
+    @Override
+    public <TH extends Exception, TH2 extends Exception> boolean anyMatch(ProtectedBiPredicate<? super E, TH, TH2> predicate, Class<TH> exception, Class<TH2> exception2) throws TH, TH2 {
         synchronized (mutex) {
             for (E element : this) {
                 if (predicate.test(element)) {
@@ -187,20 +200,7 @@ public class SynchronizedHList<E> extends ArrayHList<E> {
     }
 
     @Override
-    public <TH extends Exception, TH2 extends Exception> boolean anyMatch(Functions.BiPredicate<? super E, TH, TH2> predicate, Class<TH> exception, Class<TH2> exception2) throws TH, TH2 {
-        synchronized (mutex) {
-            for (E element : this) {
-                if (predicate.test(element)) {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-    }
-
-    @Override
-    public <TH extends Exception, TH2 extends Exception, TH3 extends Exception> boolean anyMatch(Functions.ThPredicate<? super E, TH, TH2, TH3> predicate, Class<TH> exception, Class<TH2> exception2, Class<TH3> exception3) throws TH, TH2, TH3 {
+    public <TH extends Exception, TH2 extends Exception, TH3 extends Exception> boolean anyMatch(ProtectedTHPredicate<? super E, TH, TH2, TH3> predicate, Class<TH> exception, Class<TH2> exception2, Class<TH3> exception3) throws TH, TH2, TH3 {
         synchronized (mutex) {
             for (E element : this) {
                 if (predicate.test(element)) {
@@ -226,7 +226,20 @@ public class SynchronizedHList<E> extends ArrayHList<E> {
     }
 
     @Override
-    public <TH extends Exception> boolean noneMatch(Functions.Predicate<? super E, TH> predicate, Class<TH> exception) throws TH {
+    public <TH extends Exception> boolean noneMatch(ProtectedPredicate<? super E, TH> protectedPredicate, Class<TH> exception) throws TH {
+        synchronized (mutex) {
+            for (E element : this) {
+                if (protectedPredicate.test(element)) {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+    }
+
+    @Override
+    public <TH extends Exception, TH2 extends Exception> boolean noneMatch(ProtectedBiPredicate<? super E, TH, TH2> predicate, Class<TH> exception, Class<TH2> exception2) throws TH, TH2 {
         synchronized (mutex) {
             for (E element : this) {
                 if (predicate.test(element)) {
@@ -239,7 +252,7 @@ public class SynchronizedHList<E> extends ArrayHList<E> {
     }
 
     @Override
-    public <TH extends Exception, TH2 extends Exception> boolean noneMatch(Functions.BiPredicate<? super E, TH, TH2> predicate, Class<TH> exception, Class<TH2> exception2) throws TH, TH2 {
+    public <TH extends Exception, TH2 extends Exception, TH3 extends Exception> boolean noneMatch(ProtectedTHPredicate<? super E, TH, TH2, TH3> predicate, Class<TH> exception, Class<TH2> exception2, Class<TH3> exception3) throws TH, TH2, TH3 {
         synchronized (mutex) {
             for (E element : this) {
                 if (predicate.test(element)) {
@@ -252,20 +265,7 @@ public class SynchronizedHList<E> extends ArrayHList<E> {
     }
 
     @Override
-    public <TH extends Exception, TH2 extends Exception, TH3 extends Exception> boolean noneMatch(Functions.ThPredicate<? super E, TH, TH2, TH3> predicate, Class<TH> exception, Class<TH2> exception2, Class<TH3> exception3) throws TH, TH2, TH3 {
-        synchronized (mutex) {
-            for (E element : this) {
-                if (predicate.test(element)) {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-    }
-
-    @Override
-    public <TH extends Exception> void forEach(Functions.Consumer<? super E, TH> action, Class<TH> exception) throws TH {
+    public <TH extends Exception> void forEach(ProtectedConsumer<? super E, TH> action, Class<TH> exception) throws TH {
         synchronized (mutex) {
             for (E e : this) {
                 action.accept(e);
@@ -274,7 +274,7 @@ public class SynchronizedHList<E> extends ArrayHList<E> {
     }
 
     @Override
-    public <TH extends Exception, TH2 extends Exception> void forEach(Functions.BiConsumer<? super E, TH, TH2> action, Class<TH> exception, Class<TH2> exception2) throws TH, TH2 {
+    public <TH extends Exception, TH2 extends Exception> void forEach(ProtectedBiConsumer<? super E, TH, TH2> action, Class<TH> exception, Class<TH2> exception2) throws TH, TH2 {
         synchronized (mutex) {
             for (E e : this) {
                 action.accept(e);
@@ -283,7 +283,7 @@ public class SynchronizedHList<E> extends ArrayHList<E> {
     }
 
     @Override
-    public <TH extends Exception, TH2 extends Exception, TH3 extends Exception> void forEach(Functions.ThConsumer<? super E, TH, TH2, TH3> action, Class<TH> exception, Class<TH2> exception2, Class<TH3> exception3) throws TH, TH2, TH3 {
+    public <TH extends Exception, TH2 extends Exception, TH3 extends Exception> void forEach(ProtectedTHConsumer<? super E, TH, TH2, TH3> action, Class<TH> exception, Class<TH2> exception2, Class<TH3> exception3) throws TH, TH2, TH3 {
         synchronized (mutex) {
             for (E e : this) {
                 action.accept(e);
@@ -292,7 +292,7 @@ public class SynchronizedHList<E> extends ArrayHList<E> {
     }
 
     @Override
-    public <TH extends Exception> boolean removeIf(Functions.Predicate<? super E, TH> filter, Class<TH> exception) throws TH {
+    public <TH extends Exception> boolean removeIf(ProtectedPredicate<? super E, TH> filter, Class<TH> exception) throws TH {
         boolean removed = false;
         synchronized (mutex) {
             final Iterator<E> each = iterator();
@@ -307,7 +307,7 @@ public class SynchronizedHList<E> extends ArrayHList<E> {
     }
 
     @Override
-    public <TH extends Exception, TH2 extends Exception> boolean removeIf(Functions.BiPredicate<? super E, TH, TH2> filter, Class<TH> exception, Class<TH2> exception2) throws TH, TH2 {
+    public <TH extends Exception, TH2 extends Exception> boolean removeIf(ProtectedBiPredicate<? super E, TH, TH2> filter, Class<TH> exception, Class<TH2> exception2) throws TH, TH2 {
         boolean removed = false;
         synchronized (mutex) {
             final Iterator<E> each = iterator();
@@ -322,7 +322,7 @@ public class SynchronizedHList<E> extends ArrayHList<E> {
     }
 
     @Override
-    public <TH extends Exception, TH2 extends Exception, TH3 extends Exception> boolean removeIf(Functions.ThPredicate<? super E, TH, TH2, TH3> filter, Class<TH> exception, Class<TH2> exception2, Class<TH3> exception3) throws TH, TH2, TH3 {
+    public <TH extends Exception, TH2 extends Exception, TH3 extends Exception> boolean removeIf(ProtectedTHPredicate<? super E, TH, TH2, TH3> filter, Class<TH> exception, Class<TH2> exception2, Class<TH3> exception3) throws TH, TH2, TH3 {
         boolean removed = false;
         synchronized (mutex) {
             final Iterator<E> each = iterator();
@@ -384,7 +384,7 @@ public class SynchronizedHList<E> extends ArrayHList<E> {
 
     @Override
     public HList<E> findAll(Predicate<? super E> predicate) {
-        HList<E> values = new SynchronizedHList<>();
+        HList<E> values = new ProtectedList<>();
         synchronized(mutex) {
             for (E element : this) {
                 if (predicate.test(element)) values.add(element);
@@ -447,7 +447,7 @@ public class SynchronizedHList<E> extends ArrayHList<E> {
 
     @Override
     public HList<E> subList(Predicate<E> condition) {
-        HList<E> list = new CopyOnWriteArrayHList<>();
+        HList<E> list = new ConcurrentList<>();
         synchronized (mutex) {
             for (E element : this) {
                 if (condition.test(element)) {
@@ -659,7 +659,7 @@ public class SynchronizedHList<E> extends ArrayHList<E> {
     @Override
     public HList<E> subList(int fromIndex, int toIndex) {
         synchronized (mutex) {
-            return new SynchronizedHList<>(this, fromIndex, toIndex);
+            return new ProtectedList<>(this, fromIndex, toIndex);
         }
     }
 

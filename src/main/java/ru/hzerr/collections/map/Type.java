@@ -1,0 +1,5 @@
+package ru.hzerr.collections.map;
+
+public enum Type {
+    EXTENDED, PROTECTED
+}

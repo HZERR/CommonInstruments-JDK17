@@ -1,19 +1,19 @@
 package ru.hzerr.collections.list;
 
-import ru.hzerr.collections.functions.Functions;
+import ru.hzerr.collections.functions.list.*;
 
 import java.lang.reflect.Array;
 import java.util.*;
 import java.util.function.*;
 import java.util.function.IntFunction;
 
-public class ArrayHList<E> extends ArrayList<E> implements HList<E> {
+public class ExtendedList<E> extends ArrayList<E> implements HList<E> {
 
-    public ArrayHList() { super(); }
-    public ArrayHList(int initialCapacity) { super(initialCapacity); }
-    public ArrayHList(Collection<? extends E> collection) { super(collection); }
+    public ExtendedList() { super(); }
+    public ExtendedList(int initialCapacity) { super(initialCapacity); }
+    public ExtendedList(Collection<? extends E> collection) { super(collection); }
 
-    private ArrayHList(HList<? extends E> collection, int from, int to) {
+    private ExtendedList(HList<? extends E> collection, int from, int to) {
         for (int i = from; i < to; i++) {
             add(collection.get(i));
         }
@@ -21,7 +21,7 @@ public class ArrayHList<E> extends ArrayList<E> implements HList<E> {
 
     @Override
     public <R> HList<R> map(Function<? super E, ? extends R> mapper) {
-        HList<R> list = new ArrayHList<>();
+        HList<R> list = new ExtendedList<>();
         for (E element : this) {
             list.add(mapper.apply(element));
         }
@@ -30,8 +30,8 @@ public class ArrayHList<E> extends ArrayList<E> implements HList<E> {
     }
 
     @Override
-    public <R, TH extends Exception> HList<R> map(Functions.Func<? super E, ? extends R, TH> mapper, Class<TH> exception) throws TH {
-        HList<R> list = new ArrayHList<>();
+    public <R, TH extends Exception> HList<R> map(ProtectedFunction<? super E, ? extends R, TH> mapper, Class<TH> exception) throws TH {
+        HList<R> list = new ExtendedList<>();
         for (E element : this) {
             list.add(mapper.apply(element));
         }
@@ -40,8 +40,8 @@ public class ArrayHList<E> extends ArrayList<E> implements HList<E> {
     }
 
     @Override
-    public <R, TH extends Exception, TH2 extends Exception> HList<R> map(Functions.BiFunc<? super E, ? extends R, TH, TH2> mapper, Class<TH> exception, Class<TH2> exception2) throws TH, TH2 {
-        HList<R> list = new ArrayHList<>();
+    public <R, TH extends Exception, TH2 extends Exception> HList<R> map(ProtectedBiFunction<? super E, ? extends R, TH, TH2> mapper, Class<TH> exception, Class<TH2> exception2) throws TH, TH2 {
+        HList<R> list = new ExtendedList<>();
         for (E element : this) {
             list.add(mapper.apply(element));
         }
@@ -50,8 +50,8 @@ public class ArrayHList<E> extends ArrayList<E> implements HList<E> {
     }
 
     @Override
-    public <R, TH extends Exception, TH2 extends Exception, TH3 extends Exception> HList<R> map(Functions.ThFunc<? super E, ? extends R, TH, TH2, TH3> mapper, Class<TH> exception, Class<TH2> exception2, Class<TH3> exception3) throws TH, TH2, TH3 {
-        HList<R> list = new ArrayHList<>();
+    public <R, TH extends Exception, TH2 extends Exception, TH3 extends Exception> HList<R> map(ProtectedTHFunction<? super E, ? extends R, TH, TH2, TH3> mapper, Class<TH> exception, Class<TH2> exception2, Class<TH3> exception3) throws TH, TH2, TH3 {
+        HList<R> list = new ExtendedList<>();
         for (E element : this) {
             list.add(mapper.apply(element));
         }
@@ -71,7 +71,7 @@ public class ArrayHList<E> extends ArrayList<E> implements HList<E> {
     }
 
     @Override
-    public <TH extends Exception> boolean allMatch(Functions.Predicate<? super E, TH> predicate, Class<TH> exception) throws TH {
+    public <TH extends Exception> boolean allMatch(ProtectedPredicate<? super E, TH> predicate, Class<TH> exception) throws TH {
         for (E element : this) {
             if (!predicate.test(element)) {
                 return false;
@@ -82,7 +82,7 @@ public class ArrayHList<E> extends ArrayList<E> implements HList<E> {
     }
 
     @Override
-    public <TH extends Exception, TH2 extends Exception> boolean allMatch(Functions.BiPredicate<? super E, TH, TH2> predicate, Class<TH> exception, Class<TH2> exception2) throws TH, TH2 {
+    public <TH extends Exception, TH2 extends Exception> boolean allMatch(ProtectedBiPredicate<? super E, TH, TH2> predicate, Class<TH> exception, Class<TH2> exception2) throws TH, TH2 {
         for (E element : this) {
             if (!predicate.test(element)) {
                 return false;
@@ -93,7 +93,7 @@ public class ArrayHList<E> extends ArrayList<E> implements HList<E> {
     }
 
     @Override
-    public <TH extends Exception, TH2 extends Exception, TH3 extends Exception> boolean allMatch(Functions.ThPredicate<? super E, TH, TH2, TH3> predicate, Class<TH> exception, Class<TH2> exception2, Class<TH3> exception3) throws TH, TH2, TH3 {
+    public <TH extends Exception, TH2 extends Exception, TH3 extends Exception> boolean allMatch(ProtectedTHPredicate<? super E, TH, TH2, TH3> predicate, Class<TH> exception, Class<TH2> exception2, Class<TH3> exception3) throws TH, TH2, TH3 {
         for (E element : this) {
             if (!predicate.test(element)) {
                 return false;
@@ -115,7 +115,7 @@ public class ArrayHList<E> extends ArrayList<E> implements HList<E> {
     }
 
     @Override
-    public <TH extends Exception> boolean anyMatch(Functions.Predicate<? super E, TH> predicate, Class<TH> exception) throws TH {
+    public <TH extends Exception> boolean anyMatch(ProtectedPredicate<? super E, TH> predicate, Class<TH> exception) throws TH {
         for (E element : this) {
             if (predicate.test(element)) {
                 return true;
@@ -126,7 +126,7 @@ public class ArrayHList<E> extends ArrayList<E> implements HList<E> {
     }
 
     @Override
-    public <TH extends Exception, TH2 extends Exception> boolean anyMatch(Functions.BiPredicate<? super E, TH, TH2> predicate, Class<TH> exception, Class<TH2> exception2) throws TH, TH2 {
+    public <TH extends Exception, TH2 extends Exception> boolean anyMatch(ProtectedBiPredicate<? super E, TH, TH2> predicate, Class<TH> exception, Class<TH2> exception2) throws TH, TH2 {
         for (E element : this) {
             if (predicate.test(element)) {
                 return true;
@@ -137,7 +137,7 @@ public class ArrayHList<E> extends ArrayList<E> implements HList<E> {
     }
 
     @Override
-    public <TH extends Exception, TH2 extends Exception, TH3 extends Exception> boolean anyMatch(Functions.ThPredicate<? super E, TH, TH2, TH3> predicate, Class<TH> exception, Class<TH2> exception2, Class<TH3> exception3) throws TH, TH2, TH3 {
+    public <TH extends Exception, TH2 extends Exception, TH3 extends Exception> boolean anyMatch(ProtectedTHPredicate<? super E, TH, TH2, TH3> predicate, Class<TH> exception, Class<TH2> exception2, Class<TH3> exception3) throws TH, TH2, TH3 {
         for (E element : this) {
             if (predicate.test(element)) {
                 return true;
@@ -159,7 +159,18 @@ public class ArrayHList<E> extends ArrayList<E> implements HList<E> {
     }
 
     @Override
-    public <TH extends Exception> boolean noneMatch(Functions.Predicate<? super E, TH> predicate, Class<TH> exception) throws TH {
+    public <TH extends Exception> boolean noneMatch(ProtectedPredicate<? super E, TH> protectedPredicate, Class<TH> exception) throws TH {
+        for (E element : this) {
+            if (protectedPredicate.test(element)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    @Override
+    public <TH extends Exception, TH2 extends Exception> boolean noneMatch(ProtectedBiPredicate<? super E, TH, TH2> predicate, Class<TH> exception, Class<TH2> exception2) throws TH, TH2 {
         for (E element : this) {
             if (predicate.test(element)) {
                 return false;
@@ -170,7 +181,7 @@ public class ArrayHList<E> extends ArrayList<E> implements HList<E> {
     }
 
     @Override
-    public <TH extends Exception, TH2 extends Exception> boolean noneMatch(Functions.BiPredicate<? super E, TH, TH2> predicate, Class<TH> exception, Class<TH2> exception2) throws TH, TH2 {
+    public <TH extends Exception, TH2 extends Exception, TH3 extends Exception> boolean noneMatch(ProtectedTHPredicate<? super E, TH, TH2, TH3> predicate, Class<TH> exception, Class<TH2> exception2, Class<TH3> exception3) throws TH, TH2, TH3 {
         for (E element : this) {
             if (predicate.test(element)) {
                 return false;
@@ -181,18 +192,7 @@ public class ArrayHList<E> extends ArrayList<E> implements HList<E> {
     }
 
     @Override
-    public <TH extends Exception, TH2 extends Exception, TH3 extends Exception> boolean noneMatch(Functions.ThPredicate<? super E, TH, TH2, TH3> predicate, Class<TH> exception, Class<TH2> exception2, Class<TH3> exception3) throws TH, TH2, TH3 {
-        for (E element : this) {
-            if (predicate.test(element)) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    @Override
-    public <TH extends Exception> void forEach(Functions.Consumer<? super E, TH> action, Class<TH> exception) throws TH {
+    public <TH extends Exception> void forEach(ProtectedConsumer<? super E, TH> action, Class<TH> exception) throws TH {
         for (E e : this) {
             action.accept(e);
         }
@@ -200,7 +200,7 @@ public class ArrayHList<E> extends ArrayList<E> implements HList<E> {
 
     @Override
     public <TH extends Exception, TH2 extends Exception>
-    void forEach(Functions.BiConsumer<? super E, TH, TH2> action, Class<TH> exception, Class<TH2> exception2) throws TH, TH2 {
+    void forEach(ProtectedBiConsumer<? super E, TH, TH2> action, Class<TH> exception, Class<TH2> exception2) throws TH, TH2 {
         for (E e : this) {
             action.accept(e);
         }
@@ -208,14 +208,14 @@ public class ArrayHList<E> extends ArrayList<E> implements HList<E> {
 
     @Override
     public <TH extends Exception, TH2 extends Exception, TH3 extends Exception>
-    void forEach(Functions.ThConsumer<? super E, TH, TH2, TH3> action, Class<TH> exception, Class<TH2> exception2, Class<TH3> exception3) throws TH, TH2, TH3 {
+    void forEach(ProtectedTHConsumer<? super E, TH, TH2, TH3> action, Class<TH> exception, Class<TH2> exception2, Class<TH3> exception3) throws TH, TH2, TH3 {
         for (E e : this) {
             action.accept(e);
         }
     }
 
     @Override
-    public <TH extends Exception> boolean removeIf(Functions.Predicate<? super E, TH> filter, Class<TH> exception) throws TH {
+    public <TH extends Exception> boolean removeIf(ProtectedPredicate<? super E, TH> filter, Class<TH> exception) throws TH {
         boolean removed = false;
         final Iterator<E> each = iterator();
         while (each.hasNext()) {
@@ -228,7 +228,7 @@ public class ArrayHList<E> extends ArrayList<E> implements HList<E> {
     }
 
     @Override
-    public <TH extends Exception, TH2 extends Exception> boolean removeIf(Functions.BiPredicate<? super E, TH, TH2> filter, Class<TH> exception, Class<TH2> exception2) throws TH, TH2 {
+    public <TH extends Exception, TH2 extends Exception> boolean removeIf(ProtectedBiPredicate<? super E, TH, TH2> filter, Class<TH> exception, Class<TH2> exception2) throws TH, TH2 {
         boolean removed = false;
         final Iterator<E> each = iterator();
         while (each.hasNext()) {
@@ -241,7 +241,7 @@ public class ArrayHList<E> extends ArrayList<E> implements HList<E> {
     }
 
     @Override
-    public <TH extends Exception, TH2 extends Exception, TH3 extends Exception> boolean removeIf(Functions.ThPredicate<? super E, TH, TH2, TH3> filter, Class<TH> exception, Class<TH2> exception2, Class<TH3> exception3) throws TH, TH2, TH3 {
+    public <TH extends Exception, TH2 extends Exception, TH3 extends Exception> boolean removeIf(ProtectedTHPredicate<? super E, TH, TH2, TH3> filter, Class<TH> exception, Class<TH2> exception2, Class<TH3> exception3) throws TH, TH2, TH3 {
         boolean removed = false;
         final Iterator<E> each = iterator();
         while (each.hasNext()) {
@@ -296,7 +296,7 @@ public class ArrayHList<E> extends ArrayList<E> implements HList<E> {
 
     @Override
     public HList<E> findAll(Predicate<? super E> predicate) {
-        HList<E> values = new ArrayHList<>();
+        HList<E> values = new ExtendedList<>();
         for (E element: this) {
             if (predicate.test(element)) values.add(element);
         }
@@ -392,7 +392,7 @@ public class ArrayHList<E> extends ArrayList<E> implements HList<E> {
 
     @Override
     public HList<E> subList(Predicate<E> condition) {
-        HList<E> list = new ArrayHList<>();
+        HList<E> list = new ExtendedList<>();
         for (E element : this) {
             if (condition.test(element)) {
                 list.add(element);
@@ -404,7 +404,7 @@ public class ArrayHList<E> extends ArrayList<E> implements HList<E> {
 
     @Override
     public HList<E> subList(int fromIndex, int toIndex) {
-        return new ArrayHList<>(this, fromIndex, toIndex);
+        return new ExtendedList<>(this, fromIndex, toIndex);
     }
 
     @Override
@@ -437,7 +437,7 @@ public class ArrayHList<E> extends ArrayList<E> implements HList<E> {
     }
 
     @SafeVarargs
-    public static <E> ArrayHList<E> create(E... elements) {
-        return new ArrayHList<>(Arrays.asList(elements));
+    public static <E> ExtendedList<E> create(E... elements) {
+        return new ExtendedList<>(Arrays.asList(elements));
     }
 }

@@ -10,4 +10,14 @@ public interface HMap<K, V> extends Map<K, V>,
 
     V putAndGet(K key, V value);
     V putIfAbsentAndGet(K key, V value);
+
+    static <K, V> HMap<K, V> createExtendedMap() { return new ExtendedMap<>(); }
+    static <K, V> HMap<K, V> createProtectedMap() { return new ProtectedMap<>(); }
+
+    static <K, V> HMap<K, V> create(Type type) {
+        return switch (type) {
+            case EXTENDED -> createExtendedMap();
+            case PROTECTED -> createProtectedMap();
+        };
+    }
 }

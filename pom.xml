@@ -6,7 +6,7 @@
 
     <groupId>ru.hzerr</groupId>
     <artifactId>CommonInstruments-JDK17</artifactId>
-    <version>1.3</version>
+    <version>1.4.1</version>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
@@ -51,7 +51,9 @@
                 </executions>
             </plugin>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
+                <version>3.6.0</version>
                 <configuration>
                     <descriptorRefs>
                         <descriptorRef>jar-with-dependencies</descriptorRef>
@@ -64,16 +66,13 @@
                             <addClasspath>true</addClasspath>
                         </manifest>
                         <manifestEntries>
-                            <Library-Version>${version}</Library-Version>
+                            <Library-Version>${project.version}</Library-Version>
                             <GitHub>https://github.com/${author}</GitHub>
                             <Creation-Date>${maven.build.timestamp}</Creation-Date>
                         </manifestEntries>
                     </archive>
                 </configuration>
                 <executions>
-                    <execution>
-                        <id>clean-build-directory</id>
-                    </execution>
                     <execution>
                         <id>make-assembly</id> <!-- this is used for inheritance merges -->
                         <phase>package</phase> <!-- bind to the packaging phase -->
@@ -91,12 +90,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-clean-plugin</artifactId>
-                <version>3.2.0</version>
-                <executions>
-                    <execution>
-                        <id>clean-build-directory</id>
-                    </execution>
-                </executions>
+                <version>3.3.2</version>
                 <configuration>
                     <filesets>
                         <fileset>

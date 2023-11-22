@@ -2,7 +2,7 @@ package ru.hzerr.file;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
-import ru.hzerr.collections.list.ArrayHList;
+import ru.hzerr.collections.list.ExtendedList;
 import ru.hzerr.collections.list.HList;
 import ru.hzerr.file.annotation.MaybeRecursive;
 import ru.hzerr.file.annotation.NotRecursive;
@@ -97,7 +97,7 @@ public class HDirectory extends BaseDirectory {
                     .parallel()
                     .filter(this::isNotDirectory)
                     .map(HFile::new)
-                    .collect(Collectors.toCollection(ArrayHList::new));
+                    .collect(Collectors.toCollection(ExtendedList::new));
         }
     }
 
@@ -110,7 +110,7 @@ public class HDirectory extends BaseDirectory {
                     .parallel()
                     .filter(Files::isDirectory)
                     .map(HDirectory::new)
-                    .collect(Collectors.toCollection(ArrayHList::new));
+                    .collect(Collectors.toCollection(ExtendedList::new));
         }
     }
 
@@ -126,7 +126,7 @@ public class HDirectory extends BaseDirectory {
                         .map(path -> {
                             return Files.isDirectory(path) ? new HDirectory(path) : new HFile(path);
                         })
-                        .collect(Collectors.toCollection(ArrayHList::new));
+                        .collect(Collectors.toCollection(ExtendedList::new));
             }
         } else try (Stream<Path> pathStream = Files.list(directory.toPath())) {
             return pathStream
@@ -134,7 +134,7 @@ public class HDirectory extends BaseDirectory {
                     .map(path -> {
                         return Files.isDirectory(path) ? new HDirectory(path) : new HFile(path);
                     })
-                    .collect(Collectors.toCollection(ArrayHList::new));
+                    .collect(Collectors.toCollection(ExtendedList::new));
         }
     }
 
@@ -148,7 +148,7 @@ public class HDirectory extends BaseDirectory {
                         .parallel()
                         .filter(this::isNotDirectory)
                         .map(HFile::new)
-                        .collect(Collectors.toCollection(ArrayHList::new));
+                        .collect(Collectors.toCollection(ExtendedList::new));
             }
         } else
             return getFiles();
@@ -164,7 +164,7 @@ public class HDirectory extends BaseDirectory {
                         .parallel()
                         .filter(path -> Files.isDirectory(path) && !path.equals(directory.toPath()))
                         .map(HDirectory::new)
-                        .collect(Collectors.toCollection(ArrayHList::new));
+                        .collect(Collectors.toCollection(ExtendedList::new));
             }
         } else
             return getDirectories();
@@ -182,7 +182,7 @@ public class HDirectory extends BaseDirectory {
                         return isNotDirectory(path) && excluded.noneMatch(baseFile -> baseFile.asPath().equals(path));
                     })
                     .map(HFile::new)
-                    .collect(Collectors.toCollection(ArrayHList::new));
+                    .collect(Collectors.toCollection(ExtendedList::new));
         }
     }
 
@@ -198,7 +198,7 @@ public class HDirectory extends BaseDirectory {
                         return isNotDirectory(path) && excludedFileNames.noneMatch(fileName -> FilenameUtils.getName(path.toString()).equals(fileName));
                     })
                     .map(HFile::new)
-                    .collect(Collectors.toCollection(ArrayHList::new));
+                    .collect(Collectors.toCollection(ExtendedList::new));
         }
     }
 
@@ -213,7 +213,7 @@ public class HDirectory extends BaseDirectory {
                         .parallel()
                         .filter(path -> isNotDirectory(path) && excludedFiles.noneMatch(file -> file.asPath().equals(path)))
                         .map(HFile::new)
-                        .collect(Collectors.toCollection(ArrayHList::new));
+                        .collect(Collectors.toCollection(ExtendedList::new));
             }
         } else
             return this.getFilesExcept(filesToBeExcluded);
@@ -229,7 +229,7 @@ public class HDirectory extends BaseDirectory {
                     .parallel()
                     .filter(path -> Files.isDirectory(path) && !path.equals(directory.toPath()) && excludedStream.noneMatch(dir -> dir.asPath().equals(path)))
                     .map(HDirectory::new)
-                    .collect(Collectors.toCollection(ArrayHList::new));
+                    .collect(Collectors.toCollection(ExtendedList::new));
         }
     }
 
@@ -243,7 +243,7 @@ public class HDirectory extends BaseDirectory {
                     .parallel()
                     .filter(path -> Files.isDirectory(path) && names.noneMatch(name -> FilenameUtils.getName(path.toString()).equals(name)))
                     .map(HDirectory::new)
-                    .collect(Collectors.toCollection(ArrayHList::new));
+                    .collect(Collectors.toCollection(ExtendedList::new));
         }
     }
 
@@ -261,7 +261,7 @@ public class HDirectory extends BaseDirectory {
                             return excludedDir.notIsHierarchicalChild(dir) && dir.notIsHierarchicalChild(excludedDir);
                         }))
                         .map(HDirectory::new)
-                        .collect(Collectors.toCollection(ArrayHList::new));
+                        .collect(Collectors.toCollection(ExtendedList::new));
             }
         } else
             return this.getDirectoriesExcept(directoriesToBeExcluded);
@@ -291,7 +291,7 @@ public class HDirectory extends BaseDirectory {
                                 return filesToBeExcluded.allMatch(ifsObject::notEquals);
                         })
 
-                        .collect(Collectors.toCollection(ArrayHList::new));
+                        .collect(Collectors.toCollection(ExtendedList::new));
             }
         } else try (Stream<Path> pathStream = Files.list(directory.toPath())) {
             return pathStream
@@ -301,7 +301,7 @@ public class HDirectory extends BaseDirectory {
                     .map(path -> {
                         return Files.isDirectory(path) ? new HDirectory(path) : new HFile(path);
                     })
-                    .collect(Collectors.toCollection(ArrayHList::new));
+                    .collect(Collectors.toCollection(ExtendedList::new));
         }
     }
 
@@ -400,7 +400,7 @@ public class HDirectory extends BaseDirectory {
                     .map(path -> {
                         return Files.isDirectory(path) ? new HDirectory(path) : new HFile(path);
                     })
-                    .collect(Collectors.toCollection(ArrayHList::new));
+                    .collect(Collectors.toCollection(ExtendedList::new));
         }
     }
 
@@ -418,7 +418,7 @@ public class HDirectory extends BaseDirectory {
                     .map(path -> {
                         return Files.isDirectory(path) ? new HDirectory(path) : new HFile(path);
                     })
-                    .collect(Collectors.toCollection(ArrayHList::new));
+                    .collect(Collectors.toCollection(ExtendedList::new));
         }
     }
 
@@ -436,7 +436,7 @@ public class HDirectory extends BaseDirectory {
                     .map(path -> {
                         return Files.isDirectory(path) ? new HDirectory(path) : new HFile(path);
                     })
-                    .collect(Collectors.toCollection(ArrayHList::new));
+                    .collect(Collectors.toCollection(ExtendedList::new));
         }
     }
 
@@ -449,7 +449,7 @@ public class HDirectory extends BaseDirectory {
         }))) {
             return pathStream
                     .map(HDirectory::new)
-                    .collect(Collectors.toCollection(ArrayHList::new));
+                    .collect(Collectors.toCollection(ExtendedList::new));
         }
     }
 
@@ -465,7 +465,7 @@ public class HDirectory extends BaseDirectory {
         }))) {
             return pathStream
                     .map(HDirectory::new)
-                    .collect(Collectors.toCollection(ArrayHList::new));
+                    .collect(Collectors.toCollection(ExtendedList::new));
         }
     }
 
@@ -482,7 +482,7 @@ public class HDirectory extends BaseDirectory {
         }))) {
             return pathStream
                     .map(HDirectory::new)
-                    .collect(Collectors.toCollection(ArrayHList::new));
+                    .collect(Collectors.toCollection(ExtendedList::new));
         }
     }
 
@@ -495,7 +495,7 @@ public class HDirectory extends BaseDirectory {
         }))) {
             return pathStream
                     .map(HFile::new)
-                    .collect(Collectors.toCollection(ArrayHList::new));
+                    .collect(Collectors.toCollection(ExtendedList::new));
         }
     }
 
@@ -511,7 +511,7 @@ public class HDirectory extends BaseDirectory {
         }))) {
             return pathStream
                     .map(HFile::new)
-                    .collect(Collectors.toCollection(ArrayHList::new));
+                    .collect(Collectors.toCollection(ExtendedList::new));
         }
     }
 
@@ -527,7 +527,7 @@ public class HDirectory extends BaseDirectory {
         }))) {
             return pathStream
                     .map(HFile::new)
-                    .collect(Collectors.toCollection(ArrayHList::new));
+                    .collect(Collectors.toCollection(ExtendedList::new));
         }
     }
 
@@ -580,7 +580,7 @@ public class HDirectory extends BaseDirectory {
                     .map(path -> {
                         return Files.isDirectory(path) ? new HDirectory(path) : new HFile(path);
                     })
-                    .collect(Collectors.toCollection(ArrayHList::new));
+                    .collect(Collectors.toCollection(ExtendedList::new));
             return objects.allMatch(obj -> {
                 obj.delete();
                 return obj.notExists();
@@ -606,7 +606,7 @@ public class HDirectory extends BaseDirectory {
                     .map(path -> {
                         return Files.isDirectory(path) ? new HDirectory(path) : new HFile(path);
                     })
-                    .collect(Collectors.toCollection(ArrayHList::new));
+                    .collect(Collectors.toCollection(ExtendedList::new));
             return objects.allMatch(obj -> {
                 obj.delete();
                 return obj.notExists();
@@ -637,7 +637,7 @@ public class HDirectory extends BaseDirectory {
                     .map(path -> {
                         return Files.isDirectory(path) ? new HDirectory(path) : new HFile(path);
                     })
-                    .collect(Collectors.toCollection(ArrayHList::new));
+                    .collect(Collectors.toCollection(ExtendedList::new));
             return objects.allMatch(obj -> {
                 obj.delete();
                 return obj.notExists();

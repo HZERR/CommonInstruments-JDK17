@@ -1,6 +1,6 @@
 package ru.hzerr.collections.list;
 
-import ru.hzerr.collections.functions.Functions;
+import ru.hzerr.collections.functions.list.*;
 
 import java.lang.reflect.Array;
 import java.util.*;
@@ -14,15 +14,15 @@ import java.util.function.IntFunction;
  * @param <E> the type of elements held in this collection
  */
 @SuppressWarnings("unchecked")
-public class CopyOnWriteArrayHList<E> extends CopyOnWriteArrayList<E> implements HList<E> {
+public class ConcurrentList<E> extends CopyOnWriteArrayList<E> implements HList<E> {
 
     final transient ReentrantLock lock = new ReentrantLock();
 
-    public CopyOnWriteArrayHList() { super(); }
-    public CopyOnWriteArrayHList(E[] toCopyIn) { super(toCopyIn); }
-    public CopyOnWriteArrayHList(Collection<? extends E> collection) { super(collection); }
+    public ConcurrentList() { super(); }
+    public ConcurrentList(E[] toCopyIn) { super(toCopyIn); }
+    public ConcurrentList(Collection<? extends E> collection) { super(collection); }
 
-    private CopyOnWriteArrayHList(HList<? extends E> collection, int from, int to) {
+    private ConcurrentList(HList<? extends E> collection, int from, int to) {
         for (int i = from; i < to; i++) {
             add(collection.get(i));
         }
@@ -70,6 +70,7 @@ public class CopyOnWriteArrayHList<E> extends CopyOnWriteArrayList<E> implements
         for (E e : elements)
             if (noContains(e))
                 return false;
+
         return true;
     }
 
@@ -79,6 +80,7 @@ public class CopyOnWriteArrayHList<E> extends CopyOnWriteArrayList<E> implements
         for (Predicate<? super E> action : actions)
             if (noContains(action))
                 return false;
+
         return true;
     }
 
@@ -88,6 +90,7 @@ public class CopyOnWriteArrayHList<E> extends CopyOnWriteArrayList<E> implements
         for (E e : elements)
             if (contains(e))
                 return false;
+
         return true;
     }
 
@@ -97,6 +100,7 @@ public class CopyOnWriteArrayHList<E> extends CopyOnWriteArrayList<E> implements
         for (Predicate<? super E> action : actions)
             if (contains(action))
                 return false;
+
         return true;
     }
 
@@ -116,7 +120,7 @@ public class CopyOnWriteArrayHList<E> extends CopyOnWriteArrayList<E> implements
      */
     @Override
     public Collection<E> findAll(Predicate<? super E> predicate) {
-        HList<E> values = new ArrayHList<>();
+        HList<E> values = new ExtendedList<>();
         for (E element: this) {
             if (predicate.test(element)) values.add(element);
         }
@@ -174,7 +178,7 @@ public class CopyOnWriteArrayHList<E> extends CopyOnWriteArrayList<E> implements
 
     @Override
     public HList<E> subList(Predicate<E> condition) {
-        HList<E> list = new CopyOnWriteArrayHList<>();
+        HList<E> list = new ConcurrentList<>();
         for (E element : this) {
             if (condition.test(element)) {
                 list.add(element);
@@ -189,7 +193,7 @@ public class CopyOnWriteArrayHList<E> extends CopyOnWriteArrayList<E> implements
         final ReentrantLock lock = this.lock;
         lock.lock();
         try {
-            return new CopyOnWriteArrayHList<>(this, fromIndex, toIndex);
+            return new ConcurrentList<>(this, fromIndex, toIndex);
         } finally {
             lock.unlock();
         }
@@ -232,7 +236,7 @@ public class CopyOnWriteArrayHList<E> extends CopyOnWriteArrayList<E> implements
      */
     @Override
     public <R> HList<R> map(Function<? super E, ? extends R> mapper) {
-        HList<R> list = new CopyOnWriteArrayHList<>();
+        HList<R> list = new ConcurrentList<>();
         for (E element : this) {
             list.add(mapper.apply(element));
         }
@@ -241,7 +245,7 @@ public class CopyOnWriteArrayHList<E> extends CopyOnWriteArrayList<E> implements
     }
 
     @Override
-    public <TH extends Exception> boolean removeIf(Functions.Predicate<? super E, TH> filter, Class<TH> exception) throws TH {
+    public <TH extends Exception> boolean removeIf(ProtectedPredicate<? super E, TH> filter, Class<TH> exception) throws TH {
         final ReentrantLock lock = this.lock;
         lock.lock();
         try {
@@ -260,7 +264,7 @@ public class CopyOnWriteArrayHList<E> extends CopyOnWriteArrayList<E> implements
     }
 
     @Override
-    public <TH extends Exception, TH2 extends Exception> boolean removeIf(Functions.BiPredicate<? super E, TH, TH2> filter, Class<TH> exception, Class<TH2> exception2) throws TH, TH2 {
+    public <TH extends Exception, TH2 extends Exception> boolean removeIf(ProtectedBiPredicate<? super E, TH, TH2> filter, Class<TH> exception, Class<TH2> exception2) throws TH, TH2 {
         final ReentrantLock lock = this.lock;
         lock.lock();
         try {
@@ -279,7 +283,7 @@ public class CopyOnWriteArrayHList<E> extends CopyOnWriteArrayList<E> implements
     }
 
     @Override
-    public <TH extends Exception, TH2 extends Exception, TH3 extends Exception> boolean removeIf(Functions.ThPredicate<? super E, TH, TH2, TH3> filter, Class<TH> exception, Class<TH2> exception2, Class<TH3> exception3) throws TH, TH2, TH3 {
+    public <TH extends Exception, TH2 extends Exception, TH3 extends Exception> boolean removeIf(ProtectedTHPredicate<? super E, TH, TH2, TH3> filter, Class<TH> exception, Class<TH2> exception2, Class<TH3> exception3) throws TH, TH2, TH3 {
         final ReentrantLock lock = this.lock;
         lock.lock();
         try {
@@ -298,8 +302,8 @@ public class CopyOnWriteArrayHList<E> extends CopyOnWriteArrayList<E> implements
     }
 
     @Override
-    public <R, TH extends Exception> HList<R> map(Functions.Func<? super E, ? extends R, TH> mapper, Class<TH> exception) throws TH {
-        HList<R> list = new CopyOnWriteArrayHList<>();
+    public <R, TH extends Exception> HList<R> map(ProtectedFunction<? super E, ? extends R, TH> mapper, Class<TH> exception) throws TH {
+        HList<R> list = new ConcurrentList<>();
         for (E element : this) {
             list.add(mapper.apply(element));
         }
@@ -308,8 +312,8 @@ public class CopyOnWriteArrayHList<E> extends CopyOnWriteArrayList<E> implements
     }
 
     @Override
-    public <R, TH extends Exception, TH2 extends Exception> HList<R> map(Functions.BiFunc<? super E, ? extends R, TH, TH2> mapper, Class<TH> exception, Class<TH2> exception2) throws TH, TH2 {
-        HList<R> list = new CopyOnWriteArrayHList<>();
+    public <R, TH extends Exception, TH2 extends Exception> HList<R> map(ProtectedBiFunction<? super E, ? extends R, TH, TH2> mapper, Class<TH> exception, Class<TH2> exception2) throws TH, TH2 {
+        HList<R> list = new ConcurrentList<>();
         for (E element : this) {
             list.add(mapper.apply(element));
         }
@@ -318,8 +322,8 @@ public class CopyOnWriteArrayHList<E> extends CopyOnWriteArrayList<E> implements
     }
 
     @Override
-    public <R, TH extends Exception, TH2 extends Exception, TH3 extends Exception> HList<R> map(Functions.ThFunc<? super E, ? extends R, TH, TH2, TH3> mapper, Class<TH> exception, Class<TH2> exception2, Class<TH3> exception3) throws TH, TH2, TH3 {
-        HList<R> list = new CopyOnWriteArrayHList<>();
+    public <R, TH extends Exception, TH2 extends Exception, TH3 extends Exception> HList<R> map(ProtectedTHFunction<? super E, ? extends R, TH, TH2, TH3> mapper, Class<TH> exception, Class<TH2> exception2, Class<TH3> exception3) throws TH, TH2, TH3 {
+        HList<R> list = new ConcurrentList<>();
         for (E element : this) {
             list.add(mapper.apply(element));
         }
@@ -339,7 +343,7 @@ public class CopyOnWriteArrayHList<E> extends CopyOnWriteArrayList<E> implements
     }
 
     @Override
-    public <TH extends Exception> boolean allMatch(Functions.Predicate<? super E, TH> predicate, Class<TH> exception) throws TH {
+    public <TH extends Exception> boolean allMatch(ProtectedPredicate<? super E, TH> predicate, Class<TH> exception) throws TH {
         for (E element : this) {
             if (!predicate.test(element)) {
                 return false;
@@ -350,7 +354,7 @@ public class CopyOnWriteArrayHList<E> extends CopyOnWriteArrayList<E> implements
     }
 
     @Override
-    public <TH extends Exception, TH2 extends Exception> boolean allMatch(Functions.BiPredicate<? super E, TH, TH2> predicate, Class<TH> exception, Class<TH2> exception2) throws TH, TH2 {
+    public <TH extends Exception, TH2 extends Exception> boolean allMatch(ProtectedBiPredicate<? super E, TH, TH2> predicate, Class<TH> exception, Class<TH2> exception2) throws TH, TH2 {
         for (E element : this) {
             if (!predicate.test(element)) {
                 return false;
@@ -361,7 +365,7 @@ public class CopyOnWriteArrayHList<E> extends CopyOnWriteArrayList<E> implements
     }
 
     @Override
-    public <TH extends Exception, TH2 extends Exception, TH3 extends Exception> boolean allMatch(Functions.ThPredicate<? super E, TH, TH2, TH3> predicate, Class<TH> exception, Class<TH2> exception2, Class<TH3> exception3) throws TH, TH2, TH3 {
+    public <TH extends Exception, TH2 extends Exception, TH3 extends Exception> boolean allMatch(ProtectedTHPredicate<? super E, TH, TH2, TH3> predicate, Class<TH> exception, Class<TH2> exception2, Class<TH3> exception3) throws TH, TH2, TH3 {
         for (E element : this) {
             if (!predicate.test(element)) {
                 return false;
@@ -383,7 +387,7 @@ public class CopyOnWriteArrayHList<E> extends CopyOnWriteArrayList<E> implements
     }
 
     @Override
-    public <TH extends Exception> boolean anyMatch(Functions.Predicate<? super E, TH> predicate, Class<TH> exception) throws TH {
+    public <TH extends Exception> boolean anyMatch(ProtectedPredicate<? super E, TH> predicate, Class<TH> exception) throws TH {
         for (E element : this) {
             if (predicate.test(element)) {
                 return true;
@@ -394,7 +398,7 @@ public class CopyOnWriteArrayHList<E> extends CopyOnWriteArrayList<E> implements
     }
 
     @Override
-    public <TH extends Exception, TH2 extends Exception> boolean anyMatch(Functions.BiPredicate<? super E, TH, TH2> predicate, Class<TH> exception, Class<TH2> exception2) throws TH, TH2 {
+    public <TH extends Exception, TH2 extends Exception> boolean anyMatch(ProtectedBiPredicate<? super E, TH, TH2> predicate, Class<TH> exception, Class<TH2> exception2) throws TH, TH2 {
         for (E element : this) {
             if (predicate.test(element)) {
                 return true;
@@ -405,7 +409,7 @@ public class CopyOnWriteArrayHList<E> extends CopyOnWriteArrayList<E> implements
     }
 
     @Override
-    public <TH extends Exception, TH2 extends Exception, TH3 extends Exception> boolean anyMatch(Functions.ThPredicate<? super E, TH, TH2, TH3> predicate, Class<TH> exception, Class<TH2> exception2, Class<TH3> exception3) throws TH, TH2, TH3 {
+    public <TH extends Exception, TH2 extends Exception, TH3 extends Exception> boolean anyMatch(ProtectedTHPredicate<? super E, TH, TH2, TH3> predicate, Class<TH> exception, Class<TH2> exception2, Class<TH3> exception3) throws TH, TH2, TH3 {
         for (E element : this) {
             if (predicate.test(element)) {
                 return true;
@@ -427,7 +431,7 @@ public class CopyOnWriteArrayHList<E> extends CopyOnWriteArrayList<E> implements
     }
 
     @Override
-    public <TH extends Exception> boolean noneMatch(Functions.Predicate<? super E, TH> predicate, Class<TH> exception) throws TH {
+    public <TH extends Exception> boolean noneMatch(ProtectedPredicate<? super E, TH> predicate, Class<TH> exception) throws TH {
         for (E element : this) {
             if (predicate.test(element)) {
                 return false;
@@ -438,7 +442,7 @@ public class CopyOnWriteArrayHList<E> extends CopyOnWriteArrayList<E> implements
     }
 
     @Override
-    public <TH extends Exception, TH2 extends Exception> boolean noneMatch(Functions.BiPredicate<? super E, TH, TH2> predicate, Class<TH> exception, Class<TH2> exception2) throws TH, TH2 {
+    public <TH extends Exception, TH2 extends Exception> boolean noneMatch(ProtectedBiPredicate<? super E, TH, TH2> predicate, Class<TH> exception, Class<TH2> exception2) throws TH, TH2 {
         for (E element : this) {
             if (predicate.test(element)) {
                 return false;
@@ -449,7 +453,7 @@ public class CopyOnWriteArrayHList<E> extends CopyOnWriteArrayList<E> implements
     }
 
     @Override
-    public <TH extends Exception, TH2 extends Exception, TH3 extends Exception> boolean noneMatch(Functions.ThPredicate<? super E, TH, TH2, TH3> predicate, Class<TH> exception, Class<TH2> exception2, Class<TH3> exception3) throws TH, TH2, TH3 {
+    public <TH extends Exception, TH2 extends Exception, TH3 extends Exception> boolean noneMatch(ProtectedTHPredicate<? super E, TH, TH2, TH3> predicate, Class<TH> exception, Class<TH2> exception2, Class<TH3> exception3) throws TH, TH2, TH3 {
         for (E element : this) {
             if (predicate.test(element)) {
                 return false;
@@ -460,21 +464,21 @@ public class CopyOnWriteArrayHList<E> extends CopyOnWriteArrayList<E> implements
     }
 
     @Override
-    public <TH extends Exception> void forEach(Functions.Consumer<? super E, TH> action, Class<TH> exception) throws TH {
+    public <TH extends Exception> void forEach(ProtectedConsumer<? super E, TH> action, Class<TH> exception) throws TH {
         for (E e : this) {
             action.accept(e);
         }
     }
 
     @Override
-    public <TH extends Exception, TH2 extends Exception> void forEach(Functions.BiConsumer<? super E, TH, TH2> action, Class<TH> exception, Class<TH2> exception2) throws TH, TH2 {
+    public <TH extends Exception, TH2 extends Exception> void forEach(ProtectedBiConsumer<? super E, TH, TH2> action, Class<TH> exception, Class<TH2> exception2) throws TH, TH2 {
         for (E e : this) {
             action.accept(e);
         }
     }
 
     @Override
-    public <TH extends Exception, TH2 extends Exception, TH3 extends Exception> void forEach(Functions.ThConsumer<? super E, TH, TH2, TH3> action, Class<TH> exception, Class<TH2> exception2, Class<TH3> exception3) throws TH, TH2, TH3 {
+    public <TH extends Exception, TH2 extends Exception, TH3 extends Exception> void forEach(ProtectedTHConsumer<? super E, TH, TH2, TH3> action, Class<TH> exception, Class<TH2> exception2, Class<TH3> exception3) throws TH, TH2, TH3 {
         for (E e : this) {
             action.accept(e);
         }
@@ -508,7 +512,7 @@ public class CopyOnWriteArrayHList<E> extends CopyOnWriteArrayList<E> implements
     }
 
     @SafeVarargs
-    public static <E> CopyOnWriteArrayHList<E> create(E... elements) {
-        return new CopyOnWriteArrayHList<>(Arrays.asList(elements));
+    public static <E> ConcurrentList<E> create(E... elements) {
+        return new ConcurrentList<>(Arrays.asList(elements));
     }
 }

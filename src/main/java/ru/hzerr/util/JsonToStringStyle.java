@@ -11,11 +11,14 @@ public class JsonToStringStyle extends ToStringStyle {
     private static final long serialVersionUID = 1L;
 
     public JsonToStringStyle() {
-        this.setUseClassName(true);
-        this.setUseIdentityHashCode(false);
-        this.setContentStart(" {" + System.lineSeparator() + '\t');
-        this.setFieldSeparator(',' + System.lineSeparator() + '\t');
-        this.setFieldSeparatorAtStart(false);
-        this.setContentEnd(System.lineSeparator() + "}");
+        setUseClassName(true);
+        setUseShortClassName(true);
+        setFieldNameValueSeparator(" = ");
+        setUseIdentityHashCode(false);
+        setContentStart(" {" + System.lineSeparator() + '\t');
+        setFieldSeparator(',' + System.lineSeparator() + '\t');
+        setFieldSeparatorAtStart(false);
+        setArraySeparator(", ");
+        setContentEnd(System.lineSeparator() + "}");
     }
 }

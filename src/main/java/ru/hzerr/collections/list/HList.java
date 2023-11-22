@@ -97,18 +97,28 @@ public interface HList<E> extends List<E>,
     HList<E> subList(Predicate<E> condition);
 
     /**
-     * Creates an {@link ArrayHList}, adds elements to it and returns the collection
+     * Creates an {@link ExtendedList}, adds elements to it and returns the collection
      * @param elements elements to be added to the collection
      * @param <E> type of elements
      * @return a non thread-safe collection populated with the specified elements
      */
     @SafeVarargs
-    static <E> HList<E> of(E... elements) { return ArrayHList.create(elements); }
+    static <E> HList<E> of(E... elements) { return ExtendedList.create(elements); }
 
     /**
-     * Creates an empty {@link ArrayHList} and returns it
+     * Creates an empty {@link ExtendedList} and returns it
      * @param <E> type of elements
      * @return an empty non thread-safe collection
      */
-    static <E> HList<E> newList() { return new ArrayHList<>(); }
+    static <E> HList<E> createExtendedList() { return new ExtendedList<>(); }
+    static <E> HList<E> createConcurrentList() { return new ConcurrentList<>(); }
+    static <E> HList<E> createProtectedList() { return new ProtectedList<>(); }
+
+    static <E> HList<E> create(Type type) {
+        return switch (type) {
+            case EXTENDED -> createExtendedList();
+            case CONCURRENT -> createConcurrentList();
+            case PROTECTED -> createProtectedList();
+        };
+    }
 }
