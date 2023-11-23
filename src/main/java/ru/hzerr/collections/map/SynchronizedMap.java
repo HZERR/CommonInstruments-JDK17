@@ -13,20 +13,20 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.*;
 
-public class ProtectedMap<K, V> extends ExtendedMap<K, V> implements HMap<K, V>, Serializable {
+public class SynchronizedMap<K, V> extends ExtendedMap<K, V> implements HMap<K, V>, Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
     private final transient Object mutex;
 
-    public ProtectedMap() { super(); mutex = this; }
-    public ProtectedMap(Object mutex) { super(); this.mutex = mutex; }
-    public ProtectedMap(Map<? extends K, ? extends V> map) { super(map); mutex = this; }
-    public ProtectedMap(Map<? extends K, ? extends V> map, Object mutex) { super(map); this.mutex = mutex; }
-    public ProtectedMap(int initialCapacity) { super(initialCapacity); mutex = this; }
-    public ProtectedMap(int initialCapacity, Object mutex) { super(initialCapacity); this.mutex = mutex; }
-    public ProtectedMap(int initialCapacity, float loadFactor) { super(initialCapacity, loadFactor); mutex = this; }
-    public ProtectedMap(int initialCapacity, float loadFactor, Object mutex) { super(initialCapacity, loadFactor); this.mutex = mutex; }
+    public SynchronizedMap() { super(); mutex = this; }
+    public SynchronizedMap(Object mutex) { super(); this.mutex = mutex; }
+    public SynchronizedMap(Map<? extends K, ? extends V> map) { super(map); mutex = this; }
+    public SynchronizedMap(Map<? extends K, ? extends V> map, Object mutex) { super(map); this.mutex = mutex; }
+    public SynchronizedMap(int initialCapacity) { super(initialCapacity); mutex = this; }
+    public SynchronizedMap(int initialCapacity, Object mutex) { super(initialCapacity); this.mutex = mutex; }
+    public SynchronizedMap(int initialCapacity, float loadFactor) { super(initialCapacity, loadFactor); mutex = this; }
+    public SynchronizedMap(int initialCapacity, float loadFactor, Object mutex) { super(initialCapacity, loadFactor); this.mutex = mutex; }
 
     @Override
     public V putAndGet(K key, V value) {

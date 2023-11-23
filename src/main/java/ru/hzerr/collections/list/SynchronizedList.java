@@ -16,44 +16,44 @@ import java.util.stream.Stream;
  * @see Collections.SynchronizedList
  * @param <E> element type of collection
  */
-public class ProtectedList<E> extends ExtendedList<E> {
+public class SynchronizedList<E> extends ExtendedList<E> {
 
     @Serial
     private static final long serialVersionUID = 1L;
 
     private final transient Object mutex;
 
-    public ProtectedList() {
+    public SynchronizedList() {
         super();
         this.mutex = this;
     }
 
-    public ProtectedList(Object mutex) {
+    public SynchronizedList(Object mutex) {
         super();
         this.mutex = mutex;
     }
 
-    public ProtectedList(int initialCapacity) {
+    public SynchronizedList(int initialCapacity) {
         super(initialCapacity);
         this.mutex = this;
     }
 
-    public ProtectedList(int initialCapacity, Object mutex) {
+    public SynchronizedList(int initialCapacity, Object mutex) {
         super(initialCapacity);
         this.mutex = mutex;
     }
 
-    public ProtectedList(Collection<? extends E> collection) {
+    public SynchronizedList(Collection<? extends E> collection) {
         super(collection);
         this.mutex = this;
     }
 
-    public ProtectedList(Collection<? extends E> collection, Object mutex) {
+    public SynchronizedList(Collection<? extends E> collection, Object mutex) {
         super(collection);
         this.mutex = mutex;
     }
 
-    private ProtectedList(ProtectedList<? extends E> list, int from, int to) {
+    private SynchronizedList(SynchronizedList<? extends E> list, int from, int to) {
         this.mutex = list.mutex;
         for (int i = from; i < to; i++) {
             add(list.get(i));
@@ -63,7 +63,7 @@ public class ProtectedList<E> extends ExtendedList<E> {
     @Override
     public <R> HList<R> map(Function<? super E, ? extends R> mapper) {
         synchronized (mutex) {
-            HList<R> list = new ProtectedList<>();
+            HList<R> list = new SynchronizedList<>();
             for (E element : this) {
                 list.add(mapper.apply(element));
             }
@@ -75,7 +75,7 @@ public class ProtectedList<E> extends ExtendedList<E> {
     @Override
     public <R, TH extends Exception> HList<R> map(ProtectedFunction<? super E, ? extends R, TH> mapper, Class<TH> exception) throws TH {
         synchronized (mutex) {
-            HList<R> list = new ProtectedList<>();
+            HList<R> list = new SynchronizedList<>();
             for (E element : this) {
                 list.add(mapper.apply(element));
             }
@@ -87,7 +87,7 @@ public class ProtectedList<E> extends ExtendedList<E> {
     @Override
     public <R, TH extends Exception, TH2 extends Exception> HList<R> map(ProtectedBiFunction<? super E, ? extends R, TH, TH2> mapper, Class<TH> exception, Class<TH2> exception2) throws TH, TH2 {
         synchronized (mutex) {
-            HList<R> list = new ProtectedList<>();
+            HList<R> list = new SynchronizedList<>();
             for (E element : this) {
                 list.add(mapper.apply(element));
             }
@@ -99,7 +99,7 @@ public class ProtectedList<E> extends ExtendedList<E> {
     @Override
     public <R, TH extends Exception, TH2 extends Exception, TH3 extends Exception> HList<R> map(ProtectedTHFunction<? super E, ? extends R, TH, TH2, TH3> mapper, Class<TH> exception, Class<TH2> exception2, Class<TH3> exception3) throws TH, TH2, TH3 {
         synchronized (mutex) {
-            HList<R> list = new ProtectedList<>();
+            HList<R> list = new SynchronizedList<>();
             for (E element : this) {
                 list.add(mapper.apply(element));
             }
@@ -384,7 +384,7 @@ public class ProtectedList<E> extends ExtendedList<E> {
 
     @Override
     public HList<E> findAll(Predicate<? super E> predicate) {
-        HList<E> values = new ProtectedList<>();
+        HList<E> values = new SynchronizedList<>();
         synchronized(mutex) {
             for (E element : this) {
                 if (predicate.test(element)) values.add(element);
@@ -659,7 +659,7 @@ public class ProtectedList<E> extends ExtendedList<E> {
     @Override
     public HList<E> subList(int fromIndex, int toIndex) {
         synchronized (mutex) {
-            return new ProtectedList<>(this, fromIndex, toIndex);
+            return new SynchronizedList<>(this, fromIndex, toIndex);
         }
     }
 
