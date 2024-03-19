@@ -15,6 +15,6 @@ General Library for JDK 17
 	<dependency>
 	    <groupId>com.github.HZERR</groupId>
 	    <artifactId>CommonInstruments-JDK17</artifactId>
-	    <version>1.4.2</version>
+	    <version>1.4.2.2</version>
 	</dependency>
 
