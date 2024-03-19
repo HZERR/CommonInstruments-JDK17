@@ -112,13 +112,13 @@ public interface HList<E> extends List<E>,
      */
     static <E> HList<E> createExtendedList() { return new ExtendedList<>(); }
     static <E> HList<E> createConcurrentList() { return new ConcurrentList<>(); }
-    static <E> HList<E> createProtectedList() { return new SynchronizedList<>(); }
+    static <E> HList<E> createSynchronizedList() { return new SynchronizedList<>(); }
 
     static <E> HList<E> create(Type type) {
         return switch (type) {
             case EXTENDED -> createExtendedList();
             case CONCURRENT -> createConcurrentList();
-            case SYNCHRONIZED -> createProtectedList();
+            case SYNCHRONIZED -> createSynchronizedList();
         };
     }
 }
